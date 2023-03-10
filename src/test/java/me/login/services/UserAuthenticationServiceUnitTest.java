@@ -1,6 +1,6 @@
 package me.login.services;
 
-import me.login.models.Book;
+import me.login.models.UserAuthentication;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,7 +19,7 @@ public class UserAuthenticationServiceUnitTest {
 
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
-        List<Book> books = userAuthenticationService.list();
-        Assert.assertEquals(books.size(), 3);
+        List<UserAuthentication> userAuthentications = userAuthenticationService.list();
+        Assert.assertEquals(userAuthentications.size(), 3);
     }
 }

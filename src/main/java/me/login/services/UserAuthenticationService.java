@@ -1,6 +1,6 @@
 package me.login.services;
 
-import me.login.models.Book;
+import me.login.models.UserAuthentication;
 import me.login.repositories.UserAuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ public class UserAuthenticationService {
     @Autowired
     private UserAuthenticationRepository userAuthenticationRepository;
 
-    public List<Book> list() {
+    public List<UserAuthentication> list() {
         return userAuthenticationRepository.findAll();
     }
 }
