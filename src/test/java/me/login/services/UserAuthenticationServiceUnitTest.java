@@ -49,7 +49,7 @@ public class UserAuthenticationServiceUnitTest {
         Assert.assertEquals(4, userAuthentications.size());
         String id = "Eggert";
 
-        UserAuthentication userAuthentication = userAuthenticationService.registerNewUser(id, "123");
+        userAuthenticationService.registerNewUser(id, "123");
 
         userAuthentications = userAuthenticationService.list();
         Assert.assertEquals(4 + 1, userAuthentications.size());
