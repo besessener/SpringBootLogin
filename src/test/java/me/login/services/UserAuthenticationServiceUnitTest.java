@@ -22,16 +22,41 @@ public class UserAuthenticationServiceUnitTest {
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
         List<UserAuthentication> userAuthentications = userAuthenticationService.list();
 
-        Assert.assertEquals(userAuthentications.size(), 4);
+        Assert.assertEquals(4, userAuthentications.size());
     }
 
     @Test
-    public void whenApplicationStarts_thenHibernateCreatesInitialRecords_StatusIsProperlyReadable() {
+    public void whenApplicationStarts_thenStatusIsProperlyReadable() {
         List<UserAuthentication> userAuthentications = userAuthenticationService.list();
 
-        Assert.assertEquals(userAuthentications.get(0).getStatus(), UserStatus.ACTIVE);
-        Assert.assertEquals(userAuthentications.get(1).getStatus(), UserStatus.ACTIVE);
-        Assert.assertEquals(userAuthentications.get(2).getStatus(), UserStatus.LOCKED);
-        Assert.assertEquals(userAuthentications.get(3).getStatus(), UserStatus.UNAPPROVED);
+        Assert.assertEquals(UserStatus.ACTIVE, userAuthentications.get(0).getStatus());
+        Assert.assertEquals(UserStatus.ACTIVE, userAuthentications.get(1).getStatus());
+        Assert.assertEquals(UserStatus.LOCKED, userAuthentications.get(2).getStatus());
+        Assert.assertEquals(UserStatus.UNAPPROVED, userAuthentications.get(3).getStatus());
+    }
+
+    @Test
+    public void whenCreatingNewUserWhichExists_thenReturnsNull() {
+        List<UserAuthentication> userAuthentications = userAuthenticationService.list();
+        UserAuthentication userAuthentication = userAuthenticationService.registerNewUser("Matthias", "123");
+
+        Assert.assertEquals(null, userAuthentication);
+    }
+
+    @Test
+    public void whenCreatingNewUser_thenCountUpListAndCheckPasswordEncryption() {
+        List<UserAuthentication> userAuthentications = userAuthenticationService.list();
+        Assert.assertEquals(4, userAuthentications.size());
+        String id = "Eggert";
+
+        UserAuthentication userAuthentication = userAuthenticationService.registerNewUser(id, "123");
+
+        userAuthentications = userAuthenticationService.list();
+        Assert.assertEquals(4 + 1, userAuthentications.size());
+        Assert.assertEquals(id, userAuthentications.get(4).getIdentification());
+
+        String pwd = userAuthentications.get(4).getPassword();
+        Assert.assertTrue(pwd.startsWith("$2a$10$")); // salt algorithm
+        Assert.assertTrue(pwd.length() == 60); // hash + salt
     }
 }
