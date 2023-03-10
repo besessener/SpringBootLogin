@@ -12,14 +12,14 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class BookServiceUnitTest {
+public class UserAuthenticationServiceUnitTest {
 
     @Autowired
-    private BookService bookService;
+    private UserAuthenticationService userAuthenticationService;
 
     @Test
     public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
-        List<Book> books = bookService.list();
+        List<Book> books = userAuthenticationService.list();
         Assert.assertEquals(books.size(), 3);
     }
 }
