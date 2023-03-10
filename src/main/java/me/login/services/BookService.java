@@ -1,7 +1,7 @@
 package me.login.services;
 
 import me.login.models.Book;
-import me.login.repositories.BookRepository;
+import me.login.repositories.UserAuthenticationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.List;
 public class BookService {
 
     @Autowired
-    private BookRepository bookRepository;
+    private UserAuthenticationRepository userAuthenticationRepository;
 
     public List<Book> list() {
-        return bookRepository.findAll();
+        return userAuthenticationRepository.findAll();
     }
 }
