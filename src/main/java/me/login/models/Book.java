@@ -11,4 +11,5 @@ public class Book {
     @GeneratedValue
     private Long id; // key
     private String identification; // username or whatever
+    private String password;
 }
