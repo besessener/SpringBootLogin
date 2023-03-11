@@ -28,7 +28,7 @@ public class RegistrationServiceTest {
     public void whenCreatingNewUserWhichExists_thenReturnsNull() {
         List<IdentificationData> identificationData = identificationDataService.list();
         IdentificationData identification = registrationService
-                .registerNewUser("Matthias", "123");
+                .registerNewUser("Matthias", "123", "123");
 
         Assert.assertEquals(null, identification);
     }
@@ -40,7 +40,7 @@ public class RegistrationServiceTest {
         String id = "Eggert";
 
         String rawPwd = "MyPa$$W0rt#1.";
-        registrationService.registerNewUser(id, rawPwd);
+        registrationService.registerNewUser(id, rawPwd, rawPwd);
 
         identificationData = identificationDataService.list();
         Assert.assertEquals(4 + 1, identificationData.size());

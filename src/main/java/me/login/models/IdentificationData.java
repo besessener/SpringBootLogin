@@ -11,8 +11,9 @@ import org.springframework.stereotype.Component;
 public class IdentificationData {
     @Id
     private String identification;
+
     private String password;
 
     @Enumerated(EnumType.ORDINAL)
-    private UserStatus status;
+    private IdentificationStatus status;
 }

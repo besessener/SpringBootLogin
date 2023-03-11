@@ -1,7 +1,7 @@
 package me.login.services;
 
 import me.login.models.IdentificationData;
-import me.login.models.UserStatus;
+import me.login.models.IdentificationStatus;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,20 +19,13 @@ public class IdentificationDataServiceTest {
     private IdentificationDataService identificationDataService;
 
     @Test
-    public void whenApplicationStarts_thenHibernateCreatesInitialRecords() {
-        List<IdentificationData> identificationData = identificationDataService.list();
-
-        Assert.assertEquals(4, identificationData.size());
-    }
-
-    @Test
     public void whenApplicationStarts_thenStatusIsProperlyReadable() {
         List<IdentificationData> identificationData = identificationDataService.list();
 
-        Assert.assertEquals(UserStatus.ACTIVE, identificationData.get(0).getStatus());
-        Assert.assertEquals(UserStatus.ACTIVE, identificationData.get(1).getStatus());
-        Assert.assertEquals(UserStatus.LOCKED, identificationData.get(2).getStatus());
-        Assert.assertEquals(UserStatus.UNAPPROVED, identificationData.get(3).getStatus());
+        Assert.assertEquals(IdentificationStatus.ACTIVE, identificationData.get(0).getStatus());
+        Assert.assertEquals(IdentificationStatus.ACTIVE, identificationData.get(1).getStatus());
+        Assert.assertEquals(IdentificationStatus.LOCKED, identificationData.get(2).getStatus());
+        Assert.assertEquals(IdentificationStatus.UNAPPROVED, identificationData.get(3).getStatus());
     }
 
     @Test

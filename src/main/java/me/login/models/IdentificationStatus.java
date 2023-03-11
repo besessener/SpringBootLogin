@@ -1,6 +1,6 @@
 package me.login.models;
 
-public enum UserStatus {
+public enum IdentificationStatus {
     ACTIVE,
     UNAPPROVED,
     LOCKED
