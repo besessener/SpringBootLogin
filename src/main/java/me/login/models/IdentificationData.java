@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Entity
 @Component
 @Getter @Setter
-public class UserAuthentication {
+public class IdentificationData {
     @Id
     private String identification;
     private String password;
