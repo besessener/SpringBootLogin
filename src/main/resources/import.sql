@@ -1,4 +1,4 @@
-insert into user_authentication values('Matthias', '123', 0);
-insert into user_authentication values('Thomas', '123', 0);
-insert into user_authentication values('someone', '123', 2);
-insert into user_authentication values('someone-else', '123', 1);
+insert into user_authentication values('Matthias', 'saihttaM1!', 0);
+insert into user_authentication values('Thomas', 'samohT1!', 0);
+insert into user_authentication values('Someone', 'enoemoS1!', 2);
+insert into user_authentication values('Someone-Else', 'eslE-enoemoS1!', 1);

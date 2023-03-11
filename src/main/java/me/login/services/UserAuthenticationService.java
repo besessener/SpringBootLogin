@@ -30,7 +30,8 @@ public class UserAuthenticationService {
 
     @Transactional
     public UserAuthentication registerNewUser(String identification, String password) {
-        boolean userExists = this.list().stream().anyMatch(user -> user.getIdentification().equals(identification));
+        boolean userExists = this.list().stream()
+                .anyMatch(user -> user.getIdentification().equalsIgnoreCase(identification));
         if (!userExists) {
             UserAuthentication userAuthentication = new UserAuthentication();
             userAuthentication.setIdentification(identification);
