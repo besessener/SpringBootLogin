@@ -13,13 +13,13 @@ import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserRegistrationServiceTest {
+public class RegistrationServiceTest {
 
     @Autowired
     private IdentificationDataService identificationDataService;
 
     @Autowired
-    private UserRegistrationService userRegistrationService;
+    private RegistrationService registrationService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -27,7 +27,7 @@ public class UserRegistrationServiceTest {
     @Test
     public void whenCreatingNewUserWhichExists_thenReturnsNull() {
         List<IdentificationData> identificationData = identificationDataService.list();
-        IdentificationData identification = userRegistrationService
+        IdentificationData identification = registrationService
                 .registerNewUser("Matthias", "123");
 
         Assert.assertEquals(null, identification);
@@ -40,7 +40,7 @@ public class UserRegistrationServiceTest {
         String id = "Eggert";
 
         String rawPwd = "MyPa$$W0rt#1.";
-        userRegistrationService.registerNewUser(id, rawPwd);
+        registrationService.registerNewUser(id, rawPwd);
 
         identificationData = identificationDataService.list();
         Assert.assertEquals(4 + 1, identificationData.size());

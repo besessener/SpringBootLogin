@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserRegistrationService {
+public class RegistrationService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
