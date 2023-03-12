@@ -2,7 +2,6 @@ package me.login;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import me.login.models.IdentificationData;
 import me.login.models.IdentificationDataDto;
 import me.login.services.AuthenticationService;
 import me.login.services.RegistrationService;
@@ -16,9 +15,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ApplicationContext;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
 @SpringBootApplication
@@ -52,6 +55,21 @@ public class LoginApplication implements CommandLineRunner {
         });
     }
 
+    private Image getLoginImage() {
+        String filename = "login.jpg";
+        try {
+            File imageFile = new File(filename);
+            if(imageFile.exists() && imageFile.isFile()) {
+                return ImageIO.read(imageFile);
+            }
+
+            return ImageIO.read(getClass().getResourceAsStream("/" + filename));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     private void prepareUI() {
         logger.info("#### Create UI ####");
         loginFrame = createLoginFrame();
@@ -66,28 +84,33 @@ public class LoginApplication implements CommandLineRunner {
         logger.info("#### Create Login UI ####");
         JFrame frame = new JFrame("Login");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setSize(290, 215);
+        frame.setSize(290, 475);
+        frame.setResizable(false);
+        ImageIcon imageIcon = new ImageIcon(getLoginImage());
+        JLabel loginImageLabel = (new JLabel(imageIcon));
+        loginImageLabel.setBounds(10, 10, 256, 256);
+        frame.add(loginImageLabel);
 
         frame.setLayout(null);
 
         JLabel userLabel = new JLabel("Kennung:");
-        userLabel.setBounds(10, 10, 80, 25);
+        userLabel.setBounds(10, 280, 80, 25);
         frame.add(userLabel);
 
         JTextField userText = new JTextField(20);
-        userText.setBounds(10, 35, 250, 25);
+        userText.setBounds(10, 305, 250, 25);
         frame.add(userText);
 
         JLabel passwordLabel = new JLabel("Passwort:");
-        passwordLabel.setBounds(10, 70, 80, 25);
+        passwordLabel.setBounds(10, 340, 80, 25);
         frame.add(passwordLabel);
 
         JPasswordField passwordText = new JPasswordField(20);
-        passwordText.setBounds(10, 95, 250, 25);
+        passwordText.setBounds(10, 365, 250, 25);
         frame.add(passwordText);
 
         JButton registerButton = new JButton("registrieren...");
-        registerButton.setBounds(10, 140, 110, 25);
+        registerButton.setBounds(10, 400, 110, 25);
         frame.add(registerButton);
 
         registerButton.addActionListener(new ActionListener() {
@@ -99,7 +122,7 @@ public class LoginApplication implements CommandLineRunner {
         });
 
         JButton loginButton = new JButton("login");
-        loginButton.setBounds(150, 140, 110, 25);
+        loginButton.setBounds(150, 400, 110, 25);
         frame.add(loginButton);
 
         loginButton.addActionListener(new ActionListener() {
@@ -122,6 +145,7 @@ public class LoginApplication implements CommandLineRunner {
         JFrame frame = new JFrame("Registrierung");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(290, 275);
+        frame.setResizable(false);
 
         frame.setLayout(null);
 
