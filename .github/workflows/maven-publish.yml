@@ -22,9 +22,10 @@ jobs:
         distribution: 'temurin'
 
     - name: Build
-      run: mvn --batch-mode -DskipTests package
+      run: mvn --batch-mode package
 
-    - name: Publish to GitHub Packages Apache Maven
-      run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
+    - name: Archive jar
+        uses: actions/upload-artifact@v3
+        with:
+          name: LoginApplication.jar
+          path: LoginApplication.jar
