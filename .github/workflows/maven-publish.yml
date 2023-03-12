@@ -25,7 +25,7 @@ jobs:
       run: mvn --batch-mode package
 
     - name: Archive jar
-        uses: actions/upload-artifact@v3
-        with:
-          name: LoginApplication.jar
-          path: LoginApplication.jar
+      uses: actions/upload-artifact@v3
+      with:
+        name: LoginApplication.jar
+        path: LoginApplication.jar
