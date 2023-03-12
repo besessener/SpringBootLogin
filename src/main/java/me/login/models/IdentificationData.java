@@ -12,6 +12,8 @@ public class IdentificationData {
     @Id
     private String identification;
 
+    private Integer failedLoginAttempts;
+
     private String password;
 
     @Enumerated(EnumType.ORDINAL)

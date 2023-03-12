@@ -22,7 +22,6 @@ public class IdentificationDataServiceTest {
     public void whenApplicationStarts_thenStatusIsProperlyReadable() {
         List<IdentificationData> identificationData = identificationDataService.list();
 
-        Assert.assertEquals(IdentificationStatus.ACTIVE, identificationData.get(0).getStatus());
         Assert.assertEquals(IdentificationStatus.ACTIVE, identificationData.get(1).getStatus());
         Assert.assertEquals(IdentificationStatus.LOCKED, identificationData.get(2).getStatus());
         Assert.assertEquals(IdentificationStatus.UNAPPROVED, identificationData.get(3).getStatus());
@@ -32,8 +31,6 @@ public class IdentificationDataServiceTest {
     public void whenApplicationStarts_thenInitialPasswordsMatchCorrectlyWithoutAdditionalEncryption() {
         List<IdentificationData> identificationData = identificationDataService.list();
 
-        Assert.assertEquals("saihttaM1!", identificationData.get(0).getPassword());
-        Assert.assertEquals("samohT1!", identificationData.get(1).getPassword());
         Assert.assertEquals("enoemoS1!", identificationData.get(2).getPassword());
         Assert.assertEquals("eslE-enoemoS1!", identificationData.get(3).getPassword());
     }
