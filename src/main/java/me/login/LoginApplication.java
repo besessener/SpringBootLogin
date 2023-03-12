@@ -2,20 +2,26 @@ package me.login;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import javax.swing.*;
+
 @SpringBootApplication
-public class LoginApplication implements CommandLineRunner {
+public class LoginApplication {
 
 	private Logger logger = LoggerFactory.getLogger(LoginApplication.class);
+
 	public static void main(String[] args) {
-		SpringApplication.run(LoginApplication.class, args);
+		try {
+			new LoginApplication().run(args);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	@Override
 	public void run(String... args) throws Exception {
-		logger.info("#### HUI ####");
+		logger.info("#### Start UI ####");
+		JFrame mainFrame = new JFrame();
+		mainFrame.setVisible(true);
 	}
 }
