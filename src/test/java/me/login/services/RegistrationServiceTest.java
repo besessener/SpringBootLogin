@@ -1,6 +1,7 @@
 package me.login.services;
 
 import me.login.models.IdentificationData;
+import me.login.models.IdentificationStatus;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -50,5 +51,19 @@ public class RegistrationServiceTest {
         Assert.assertTrue(encodedPwd.startsWith("$2a$10$")); // salt algorithm
         Assert.assertTrue(encodedPwd.length() == 60); // hash + salt
         Assert.assertTrue(passwordEncoder.matches(rawPwd, encodedPwd));
+    }
+
+    @Test
+    public void whenCreatingNewUser_thenItMustBeInactiveInitially() {
+        List<IdentificationData> identificationData = identificationDataService.list();
+        String id = "NewUser";
+        String rawPwd = "MyPa$$W0rt#1.";
+        registrationService.registerNewUser(id, rawPwd, rawPwd);
+
+        identificationData = identificationDataService.list();
+        Assert.assertEquals(6, identificationData.size());
+        Assert.assertEquals(id, identificationData.get(5).getIdentification());
+        Assert.assertEquals(IdentificationStatus.UNAPPROVED, identificationData.get(5).getStatus()); // salt algorithm
+
     }
 }
