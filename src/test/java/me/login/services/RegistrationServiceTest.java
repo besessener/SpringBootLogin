@@ -1,6 +1,8 @@
 package me.login.services;
 
+import jakarta.validation.ConstraintViolation;
 import me.login.models.IdentificationData;
+import me.login.models.IdentificationDataDto;
 import me.login.models.IdentificationStatus;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
+import java.util.Set;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -28,10 +31,10 @@ public class RegistrationServiceTest {
     @Test
     public void whenCreatingNewUserWhichExists_thenReturnsNull() {
         List<IdentificationData> identificationData = identificationDataService.list();
-        IdentificationData identification = registrationService
+        Set<ConstraintViolation<IdentificationDataDto>> violations = registrationService
                 .registerNewUser("Matthias", "123", "123");
 
-        Assert.assertEquals(null, identification);
+        Assert.assertEquals(null, violations);
     }
 
     @Test

@@ -1,5 +1,9 @@
 package me.login;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import me.login.models.IdentificationData;
+import me.login.models.IdentificationDataDto;
 import me.login.services.AuthenticationService;
 import me.login.services.RegistrationService;
 import org.slf4j.Logger;
@@ -15,154 +19,176 @@ import org.springframework.context.ApplicationContext;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Set;
 
 @SpringBootApplication
 public class LoginApplication implements CommandLineRunner {
 
-	private Logger logger = LoggerFactory.getLogger(LoginApplication.class);
-	private JFrame loginFrame;
-	private JFrame registerFrame;
+    private Logger logger = LoggerFactory.getLogger(LoginApplication.class);
+    private JFrame loginFrame;
+    private JFrame registerFrame;
 
-	@Autowired
-	AuthenticationService authenticationService;
+    @Autowired
+    AuthenticationService authenticationService;
 
-	@Autowired
-	RegistrationService registrationService;
+    @Autowired
+    RegistrationService registrationService;
 
-	public static void main(String[] args) {
-		ApplicationContext context = new SpringApplicationBuilder(LoginApplication.class)
-				.web(WebApplicationType.NONE)
-				.headless(false)
-				.bannerMode(Banner.Mode.OFF)
-				.run(args);
-	}
+    @Autowired
+    private Validator validator;
 
-	@Override
-	public void run(String... args) throws Exception {
-		SwingUtilities.invokeLater(() -> {
-			prepareUI();
-		});
-	}
+    public static void main(String[] args) {
+        ApplicationContext context = new SpringApplicationBuilder(LoginApplication.class)
+                .web(WebApplicationType.NONE)
+                .headless(false)
+                .bannerMode(Banner.Mode.OFF)
+                .run(args);
+    }
 
-	private void prepareUI() {
-		logger.info("#### Create UI ####");
-		loginFrame = createLoginFrame();
-		registerFrame = createRegisterFrame();
+    @Override
+    public void run(String... args) throws Exception {
+        SwingUtilities.invokeLater(() -> {
+            prepareUI();
+        });
+    }
 
-		logger.info("#### Start UI ####");
-		loginFrame.setVisible(true);
-		registerFrame.setVisible(false);
-	}
+    private void prepareUI() {
+        logger.info("#### Create UI ####");
+        loginFrame = createLoginFrame();
+        registerFrame = createRegisterFrame();
 
-	private JFrame createLoginFrame() {
-		logger.info("#### Create Login UI ####");
-		JFrame frame = new JFrame("Login");
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(290, 215);
+        logger.info("#### Start UI ####");
+        loginFrame.setVisible(true);
+        registerFrame.setVisible(false);
+    }
 
-		frame.setLayout(null);
+    private JFrame createLoginFrame() {
+        logger.info("#### Create Login UI ####");
+        JFrame frame = new JFrame("Login");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setSize(290, 215);
 
-		JLabel userLabel = new JLabel("Kennung:");
-		userLabel.setBounds(10, 10, 80, 25);
-		frame.add(userLabel);
+        frame.setLayout(null);
 
-		JTextField userText = new JTextField(20);
-		userText.setBounds(10, 35, 250, 25);
-		frame.add(userText);
+        JLabel userLabel = new JLabel("Kennung:");
+        userLabel.setBounds(10, 10, 80, 25);
+        frame.add(userLabel);
 
-		JLabel passwordLabel = new JLabel("Passwort:");
-		passwordLabel.setBounds(10, 70, 80, 25);
-		frame.add(passwordLabel);
+        JTextField userText = new JTextField(20);
+        userText.setBounds(10, 35, 250, 25);
+        frame.add(userText);
 
-		JPasswordField passwordText = new JPasswordField(20);
-		passwordText.setBounds(10, 95, 250, 25);
-		frame.add(passwordText);
+        JLabel passwordLabel = new JLabel("Passwort:");
+        passwordLabel.setBounds(10, 70, 80, 25);
+        frame.add(passwordLabel);
 
-		JButton registerButton = new JButton("registrieren...");
-		registerButton.setBounds(10, 140, 110, 25);
-		frame.add(registerButton);
+        JPasswordField passwordText = new JPasswordField(20);
+        passwordText.setBounds(10, 95, 250, 25);
+        frame.add(passwordText);
 
-		registerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loginFrame.setVisible(false);
-				registerFrame.setLocation(loginFrame.getLocation());
-				registerFrame.setVisible(true);
-			}
-		});
+        JButton registerButton = new JButton("registrieren...");
+        registerButton.setBounds(10, 140, 110, 25);
+        frame.add(registerButton);
 
-		JButton loginButton = new JButton("login");
-		loginButton.setBounds(150, 140, 110, 25);
-		frame.add(loginButton);
+        registerButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loginFrame.setVisible(false);
+                registerFrame.setLocation(loginFrame.getLocation());
+                registerFrame.setVisible(true);
+            }
+        });
 
-		loginButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				boolean authenticationSuccessful = authenticationService.authenticate(userText.getText(), passwordText.getText());
-				String message = "Login failed.";
-				if (authenticationSuccessful) {
-					message = "Login succeeded.";
-				}
+        JButton loginButton = new JButton("login");
+        loginButton.setBounds(150, 140, 110, 25);
+        frame.add(loginButton);
 
-				JOptionPane.showMessageDialog(null,message,"Login Result", 1);
-			}
-		});
+        loginButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                AuthenticationService.AuthenticationStatus authenticationStatus = authenticationService.authenticate(userText.getText(), passwordText.getText());
+                String message = "Login failed with reason: " + authenticationStatus;
+                if (authenticationStatus.equals(AuthenticationService.AuthenticationStatus.AUTHENTICATED)) {
+                    message = "Login succeeded.";
+                }
 
-		return frame;
-	}
+                JOptionPane.showMessageDialog(null, message, "Login Result", 1);
+            }
+        });
 
-	private JFrame createRegisterFrame() {
-		logger.info("#### Create Login UI ####");
-		JFrame frame = new JFrame("Registrierung");
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		frame.setSize(290, 275);
+        return frame;
+    }
 
-		frame.setLayout(null);
+    private JFrame createRegisterFrame() {
+        logger.info("#### Create Login UI ####");
+        JFrame frame = new JFrame("Registrierung");
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setSize(290, 275);
 
-		JLabel userLabel = new JLabel("Kennung:");
-		userLabel.setBounds(10, 10, 80, 25);
-		frame.add(userLabel);
+        frame.setLayout(null);
 
-		JTextField userText = new JTextField(20);
-		userText.setBounds(10, 35, 250, 25);
-		frame.add(userText);
+        JLabel userLabel = new JLabel("Kennung:");
+        userLabel.setBounds(10, 10, 80, 25);
+        frame.add(userLabel);
 
-		JLabel passwordLabel = new JLabel("Passwort:");
-		passwordLabel.setBounds(10, 70, 80, 25);
-		frame.add(passwordLabel);
+        JTextField userText = new JTextField(20);
+        userText.setBounds(10, 35, 250, 25);
+        frame.add(userText);
 
-		JPasswordField passwordText = new JPasswordField(20);
-		passwordText.setBounds(10, 95, 250, 25);
-		frame.add(passwordText);
+        JLabel passwordLabel = new JLabel("Passwort:");
+        passwordLabel.setBounds(10, 70, 80, 25);
+        frame.add(passwordLabel);
 
-		JLabel passwordConfirmLabel = new JLabel("Passwort bestätigen:");
-		passwordConfirmLabel.setBounds(10, 130, 150, 25);
-		frame.add(passwordConfirmLabel);
+        JPasswordField passwordText = new JPasswordField(20);
+        passwordText.setBounds(10, 95, 250, 25);
+        frame.add(passwordText);
 
-		JPasswordField passwordConfirmText = new JPasswordField(20);
-		passwordConfirmText.setBounds(10, 155, 250, 25);
-		frame.add(passwordConfirmText);
+        JLabel passwordConfirmLabel = new JLabel("Passwort bestätigen:");
+        passwordConfirmLabel.setBounds(10, 130, 150, 25);
+        frame.add(passwordConfirmLabel);
 
-		JButton cancelButton = new JButton("abbrechen");
-		cancelButton.setBounds(10, 200, 110, 25);
-		frame.add(cancelButton);
+        JPasswordField passwordConfirmText = new JPasswordField(20);
+        passwordConfirmText.setBounds(10, 155, 250, 25);
+        frame.add(passwordConfirmText);
 
-		cancelButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				loginFrame.setLocation(registerFrame.getLocation());
-				loginFrame.setVisible(true);
-				registerFrame.setVisible(false);
-			}
-		});
+        JButton cancelButton = new JButton("abbrechen");
+        cancelButton.setBounds(10, 200, 110, 25);
+        frame.add(cancelButton);
 
-		JButton registerButton = new JButton("registrieren");
-		registerButton.setBounds(150, 200, 110, 25);
-		frame.add(registerButton);
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                loginFrame.setLocation(registerFrame.getLocation());
+                loginFrame.setVisible(true);
+                registerFrame.setVisible(false);
+            }
+        });
 
-		registerButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				registrationService.registerNewUser(userText.getText(), passwordText.getPassword().toString(), passwordConfirmText.getPassword().toString());
-			}
-		});
+        JButton registerButton = new JButton("registrieren");
+        registerButton.setBounds(150, 200, 110, 25);
+        frame.add(registerButton);
 
-		return frame;
-	}
+        registerButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Set<ConstraintViolation<IdentificationDataDto>> violations = registrationService.registerNewUser(userText.getText(), passwordText.getText(), passwordConfirmText.getText());
+                boolean registrationSuccessful = violations.isEmpty();
+
+                StringBuilder errorMessage = new StringBuilder();
+                for (String violationString : violations.iterator().next().getMessage().split(",")) {
+                    errorMessage.append("\n");
+                    errorMessage.append(violationString);
+                }
+
+                String message = "Registration failed with reason:" + errorMessage.toString();
+                if (registrationSuccessful) {
+                    message = "Registration succeeded.";
+
+                    loginFrame.setLocation(registerFrame.getLocation());
+                    loginFrame.setVisible(true);
+                    registerFrame.setVisible(false);
+                }
+
+                JOptionPane.showMessageDialog(null, message, "Login Result", 1);
+            }
+        });
+
+        return frame;
+    }
 }

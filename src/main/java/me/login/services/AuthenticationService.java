@@ -26,8 +26,15 @@ public class AuthenticationService {
 
     public static final int MAX_ATTEMPT = 3;
 
+    public enum AuthenticationStatus {
+        AUTHENTICATED,
+        NO_ACTIVE_IDENTIFICATION_OR_WRONG_PASSWORD,
+        LOCKED
+    }
+
     @Transactional
-    public boolean authenticate(String identification, String password) {
+    public AuthenticationStatus authenticate(String identification, String password) {
+        AuthenticationStatus result = AuthenticationStatus.NO_ACTIVE_IDENTIFICATION_OR_WRONG_PASSWORD;
         List<IdentificationData> identificationDataList = identificationDataService.list().stream().filter(entry ->
                 entry.getIdentification().equals(identification)
                 && entry.getStatus().equals(IdentificationStatus.ACTIVE)).collect(Collectors.toList());
@@ -36,10 +43,12 @@ public class AuthenticationService {
             IdentificationData entry =  identificationDataList.get(0);
             boolean passwordMatching = passwordEncoder.matches(password, entry.getPassword());
             if (passwordMatching) {
-                return true;
+                result = AuthenticationStatus.AUTHENTICATED;
+                entry.setFailedLoginAttempts(0);
             } else {
                 entry.setFailedLoginAttempts(entry.getFailedLoginAttempts() + 1);
                 if (MAX_ATTEMPT <= entry.getFailedLoginAttempts()) {
+                    result = AuthenticationStatus.LOCKED;
                     entry.setStatus(IdentificationStatus.LOCKED);
                 }
 
@@ -47,6 +56,6 @@ public class AuthenticationService {
             }
         }
 
-        return false;
+        return result;
     }
 }
