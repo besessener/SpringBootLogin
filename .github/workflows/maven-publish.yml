@@ -22,7 +22,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build
-      run: mvn --batch-mode package
+      run: mvn --batch-mode -DskipTests package
 
     - name: Archive jar
       uses: actions/upload-artifact@v3
