@@ -28,4 +28,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: LoginApplication.jar
-        path: LoginApplication.jar
+        path: target/LoginApplication.jar
