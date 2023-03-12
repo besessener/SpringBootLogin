@@ -1,33 +1,57 @@
 package me.login;
 
+import me.login.services.AuthenticationService;
+import me.login.services.RegistrationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.context.ApplicationContext;
 
 import javax.swing.*;
-import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 @SpringBootApplication
-public class LoginApplication {
+public class LoginApplication implements CommandLineRunner {
 
 	private Logger logger = LoggerFactory.getLogger(LoginApplication.class);
+	private JFrame loginFrame;
+	private JFrame registerFrame;
+
+	@Autowired
+	AuthenticationService authenticationService;
+
+	@Autowired
+	RegistrationService registrationService;
 
 	public static void main(String[] args) {
-		try {
-			new LoginApplication().run(args);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+		ApplicationContext context = new SpringApplicationBuilder(LoginApplication.class)
+				.web(WebApplicationType.NONE)
+				.headless(false)
+				.bannerMode(Banner.Mode.OFF)
+				.run(args);
 	}
 
+	@Override
 	public void run(String... args) throws Exception {
+		SwingUtilities.invokeLater(() -> {
+			prepareUI();
+		});
+	}
+
+	private void prepareUI() {
 		logger.info("#### Create UI ####");
-		JFrame loginFrame = createLoginFrame();
-		JFrame registerFrame = createRegisterFrame();
+		loginFrame = createLoginFrame();
+		registerFrame = createRegisterFrame();
 
 		logger.info("#### Start UI ####");
 		loginFrame.setVisible(true);
-		registerFrame.setVisible(true);
+		registerFrame.setVisible(false);
 	}
 
 	private JFrame createLoginFrame() {
@@ -58,9 +82,29 @@ public class LoginApplication {
 		registerButton.setBounds(10, 140, 110, 25);
 		frame.add(registerButton);
 
+		registerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loginFrame.setVisible(false);
+				registerFrame.setLocation(loginFrame.getLocation());
+				registerFrame.setVisible(true);
+			}
+		});
+
 		JButton loginButton = new JButton("login");
 		loginButton.setBounds(150, 140, 110, 25);
 		frame.add(loginButton);
+
+		loginButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				boolean authenticationSuccessful = authenticationService.authenticate(userText.getText(), passwordText.getText());
+				String message = "Login failed.";
+				if (authenticationSuccessful) {
+					message = "Login succeeded.";
+				}
+
+				JOptionPane.showMessageDialog(null,message,"Login Result", 1);
+			}
+		});
 
 		return frame;
 	}
@@ -101,9 +145,23 @@ public class LoginApplication {
 		cancelButton.setBounds(10, 200, 110, 25);
 		frame.add(cancelButton);
 
+		cancelButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loginFrame.setLocation(registerFrame.getLocation());
+				loginFrame.setVisible(true);
+				registerFrame.setVisible(false);
+			}
+		});
+
 		JButton registerButton = new JButton("registrieren");
 		registerButton.setBounds(150, 200, 110, 25);
 		frame.add(registerButton);
+
+		registerButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				registrationService.registerNewUser(userText.getText(), passwordText.getPassword().toString(), passwordConfirmText.getPassword().toString());
+			}
+		});
 
 		return frame;
 	}
