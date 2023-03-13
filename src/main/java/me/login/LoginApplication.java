@@ -93,7 +93,7 @@ public class LoginApplication implements CommandLineRunner {
 
         frame.setLayout(null);
 
-        JLabel userLabel = new JLabel("Kennung:");
+        JLabel userLabel = new JLabel("Identification:");
         userLabel.setBounds(10, 280, 80, 25);
         frame.add(userLabel);
 
@@ -101,7 +101,7 @@ public class LoginApplication implements CommandLineRunner {
         userText.setBounds(10, 305, 250, 25);
         frame.add(userText);
 
-        JLabel passwordLabel = new JLabel("Passwort:");
+        JLabel passwordLabel = new JLabel("Password:");
         passwordLabel.setBounds(10, 340, 80, 25);
         frame.add(passwordLabel);
 
@@ -109,7 +109,7 @@ public class LoginApplication implements CommandLineRunner {
         passwordText.setBounds(10, 365, 250, 25);
         frame.add(passwordText);
 
-        JButton registerButton = new JButton("registrieren...");
+        JButton registerButton = new JButton("register...");
         registerButton.setBounds(10, 400, 110, 25);
         frame.add(registerButton);
 
@@ -142,14 +142,14 @@ public class LoginApplication implements CommandLineRunner {
 
     private JFrame createRegisterFrame() {
         logger.info("#### Create Login UI ####");
-        JFrame frame = new JFrame("Registrierung");
+        JFrame frame = new JFrame("Registration");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(290, 275);
         frame.setResizable(false);
 
         frame.setLayout(null);
 
-        JLabel userLabel = new JLabel("Kennung:");
+        JLabel userLabel = new JLabel("Identification:");
         userLabel.setBounds(10, 10, 80, 25);
         frame.add(userLabel);
 
@@ -157,7 +157,7 @@ public class LoginApplication implements CommandLineRunner {
         userText.setBounds(10, 35, 250, 25);
         frame.add(userText);
 
-        JLabel passwordLabel = new JLabel("Passwort:");
+        JLabel passwordLabel = new JLabel("Password:");
         passwordLabel.setBounds(10, 70, 80, 25);
         frame.add(passwordLabel);
 
@@ -165,7 +165,7 @@ public class LoginApplication implements CommandLineRunner {
         passwordText.setBounds(10, 95, 250, 25);
         frame.add(passwordText);
 
-        JLabel passwordConfirmLabel = new JLabel("Passwort bestätigen:");
+        JLabel passwordConfirmLabel = new JLabel("Confirmed Password:");
         passwordConfirmLabel.setBounds(10, 130, 150, 25);
         frame.add(passwordConfirmLabel);
 
@@ -173,7 +173,7 @@ public class LoginApplication implements CommandLineRunner {
         passwordConfirmText.setBounds(10, 155, 250, 25);
         frame.add(passwordConfirmText);
 
-        JButton cancelButton = new JButton("abbrechen");
+        JButton cancelButton = new JButton("cancel");
         cancelButton.setBounds(10, 200, 110, 25);
         frame.add(cancelButton);
 
@@ -185,7 +185,7 @@ public class LoginApplication implements CommandLineRunner {
             }
         });
 
-        JButton registerButton = new JButton("registrieren");
+        JButton registerButton = new JButton("register");
         registerButton.setBounds(150, 200, 110, 25);
         frame.add(registerButton);
 
