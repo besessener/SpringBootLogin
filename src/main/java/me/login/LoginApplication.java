@@ -94,7 +94,7 @@ public class LoginApplication implements CommandLineRunner {
         frame.setLayout(null);
 
         JLabel userLabel = new JLabel("Identification:");
-        userLabel.setBounds(10, 280, 80, 25);
+        userLabel.setBounds(10, 280, 150, 25);
         frame.add(userLabel);
 
         JTextField userText = new JTextField(20);
@@ -150,7 +150,7 @@ public class LoginApplication implements CommandLineRunner {
         frame.setLayout(null);
 
         JLabel userLabel = new JLabel("Identification:");
-        userLabel.setBounds(10, 10, 80, 25);
+        userLabel.setBounds(10, 10, 150, 25);
         frame.add(userLabel);
 
         JTextField userText = new JTextField(20);
