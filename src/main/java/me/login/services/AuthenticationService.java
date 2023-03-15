@@ -21,9 +21,6 @@ public class AuthenticationService {
     @Autowired
     IdentificationDataService identificationDataService;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
     public static final int MAX_ATTEMPT = 3;
 
     public enum AuthenticationStatus {
@@ -32,28 +29,25 @@ public class AuthenticationService {
         LOCKED
     }
 
-    @Transactional
     public AuthenticationStatus authenticate(String identification, String password) {
         AuthenticationStatus result = AuthenticationStatus.NO_ACTIVE_IDENTIFICATION_OR_WRONG_PASSWORD;
-        List<IdentificationData> identificationDataList = identificationDataService.list().stream().filter(entry ->
-                entry.getIdentification().equals(identification)
-                && entry.getStatus().equals(IdentificationStatus.ACTIVE)).collect(Collectors.toList());
+        List<IdentificationData> identificationDataList = identificationDataService.findAllActiveUsersNative(identification);
 
         if (!identificationDataList.isEmpty()) {
-            IdentificationData entry =  identificationDataList.get(0);
-            boolean passwordMatching = passwordEncoder.matches(password, entry.getPassword());
+            IdentificationData identificationData =  identificationDataList.get(0);
+            boolean passwordMatching = passwordEncoder.matches(password, identificationData.getPassword());
             if (passwordMatching) {
                 result = AuthenticationStatus.AUTHENTICATED;
-                entry.setFailedLoginAttempts(0);
+                identificationData.setFailedLoginAttempts(0);
             } else {
-                entry.setFailedLoginAttempts(entry.getFailedLoginAttempts() + 1);
-                if (MAX_ATTEMPT <= entry.getFailedLoginAttempts()) {
+                identificationData.setFailedLoginAttempts(identificationData.getFailedLoginAttempts() + 1);
+                if (MAX_ATTEMPT <= identificationData.getFailedLoginAttempts()) {
                     result = AuthenticationStatus.LOCKED;
-                    entry.setStatus(IdentificationStatus.LOCKED);
+                    identificationData.setStatus(IdentificationStatus.LOCKED);
                 }
-
-                entityManager.persist(entry);
             }
+
+            identificationDataService.save(identificationData);
         }
 
         return result;

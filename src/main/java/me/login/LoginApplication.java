@@ -192,21 +192,26 @@ public class LoginApplication implements CommandLineRunner {
         registerButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Set<ConstraintViolation<IdentificationDataDto>> violations = registrationService.registerNewUser(userText.getText(), passwordText.getText(), passwordConfirmText.getText());
-                boolean registrationSuccessful = violations.isEmpty();
 
-                StringBuilder errorMessage = new StringBuilder();
-                for (String violationString : violations.iterator().next().getMessage().split(",")) {
-                    errorMessage.append("\n");
-                    errorMessage.append(violationString);
-                }
+                String message = "Registration succeeded.";
 
-                String message = "Registration failed with reason:" + errorMessage.toString();
-                if (registrationSuccessful) {
-                    message = "Registration succeeded.";
+                if (null == violations) {
+                    message = "Registration failed with reason: User exists already.";
+                } else {
+                    StringBuilder errorMessage = new StringBuilder();
+                    boolean registrationSuccessful = violations.isEmpty();
+                    if (registrationSuccessful) {
+                        loginFrame.setLocation(registerFrame.getLocation());
+                        loginFrame.setVisible(true);
+                        registerFrame.setVisible(false);
+                    } else {
+                        for (String violationString : violations.iterator().next().getMessage().split(",")) {
+                            errorMessage.append("\n");
+                            errorMessage.append(violationString);
+                        }
 
-                    loginFrame.setLocation(registerFrame.getLocation());
-                    loginFrame.setVisible(true);
-                    registerFrame.setVisible(false);
+                        message = "Registration failed with reason:" + errorMessage.toString();
+                    }
                 }
 
                 JOptionPane.showMessageDialog(null, message, "Login Result", 1);

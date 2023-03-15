@@ -48,7 +48,12 @@ public class AuthenticationServiceTest {
 
     @Test
     public void whenAuthenticating_ThenLockUserOnTypingWrongPassword3TimesAndResetCounterIfSuccessfullAuthenticated() {
-        AuthenticationService.AuthenticationStatus authenticationResult = authenticationService.authenticate("Matthias", "wrongPassword");
+        AuthenticationService.AuthenticationStatus authenticationResult = authenticationService.authenticate("Matthias", "saihttaM1!");
+        Assert.assertEquals(AuthenticationService.AuthenticationStatus.AUTHENTICATED, authenticationResult);
+        Assert.assertEquals(IdentificationStatus.ACTIVE, identificationDataService.list().get(0).getStatus());
+        Assert.assertEquals(Integer.valueOf(0), identificationDataService.list().get(0).getFailedLoginAttempts());
+
+        authenticationResult = authenticationService.authenticate("Matthias", "wrongPassword");
 
         Assert.assertEquals(AuthenticationService.AuthenticationStatus.NO_ACTIVE_IDENTIFICATION_OR_WRONG_PASSWORD, authenticationResult);
         Assert.assertEquals(IdentificationStatus.ACTIVE, identificationDataService.list().get(0).getStatus());

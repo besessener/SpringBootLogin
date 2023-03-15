@@ -25,15 +25,10 @@ public class RegistrationService {
     @Autowired
     private Validator validator;
 
-    @PersistenceContext
-    private EntityManager entityManager;
-
-    @Transactional
     public Set<ConstraintViolation<IdentificationDataDto>> registerNewUser(String identification, String password, String passwordConfirmed) {
         IdentificationDataDto identificationDataDto = new IdentificationDataDto(
                 identification, password, passwordConfirmed, IdentificationStatus.UNAPPROVED);
-        boolean userExists = identificationDataService.list().stream()
-                .anyMatch(user -> user.getIdentification().equalsIgnoreCase(identificationDataDto.getIdentification()));
+        boolean userExists = !identificationDataService.findUsersNative(identification).isEmpty();
         if (userExists) {
             return null;
         }
@@ -44,7 +39,7 @@ public class RegistrationService {
             identificationData.setIdentification(identificationDataDto.getIdentification());
             identificationData.setPassword(passwordEncoder.encode(identificationDataDto.getPassword()));
             identificationData.setStatus(identificationDataDto.getStatus());
-            entityManager.persist(identificationData);
+            identificationDataService.save(identificationData);
         }
 
         return violations;
